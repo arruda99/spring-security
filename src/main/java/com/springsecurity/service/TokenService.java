@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 
@@ -23,9 +22,23 @@ public class TokenService {
     public String generateToken(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         Date expirationDate = new Date(new Date().getTime() + expiration);
-        return Jwts.builder().setIssuer("Spring Security").setSubject(user.getId().toString())
+        return Jwts.builder().setIssuer("Spring Security")
+                .setSubject(user.getId().toString())
                 .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+
+    public boolean isValidToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(this.secretKey).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Long getIdUser(String token) {
+        return Long.parseLong(Jwts.parser().setSigningKey(this.secretKey).parseClaimsJws(token).getBody().getSubject());
     }
 }
