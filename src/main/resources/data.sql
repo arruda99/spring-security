@@ -1,0 +1,2 @@
+insert into user (name,password,permission) values ('arruda','$2a$10$/ezVjm.ZXeonf8cxSJtrvu2vC9Gx9z.R/yvpLfxX1rLwttrvGwYle','USER')
+insert into user (name,password,permission) values ('admin','$2b$10$O5d2NC0oTnyuxvQqTJfzN.78MT2Z1l3BIx1rsszIYjgyOy5NYLZS2','ADMIN')

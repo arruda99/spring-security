@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -44,11 +45,14 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/auth").permitAll()
+                .antMatchers("/auth","/h2-console/**").permitAll()
+                .antMatchers("/admin**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().csrf().disable()
+                .headers().frameOptions().disable()
+                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(new AuthenticationTokenFilter(tokenService,userRepository),AuthenticationTokenFilter.class);
+                .addFilterBefore(new AuthenticationTokenFilter(tokenService,userRepository), UsernamePasswordAuthenticationFilter.class);
     }
 }

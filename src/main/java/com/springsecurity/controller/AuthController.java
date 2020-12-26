@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,9 +28,8 @@ public class AuthController {
     private TokenService tokenService;
 
     @PostMapping
-    public ResponseEntity<TokenDTO> authenticate(LoginDTO body) {
+    public ResponseEntity<TokenDTO> authenticate(@RequestBody LoginDTO body) {
         UsernamePasswordAuthenticationToken data = body.convert();
-
         try {
             Authentication authentication = authenticationManager.authenticate(data);
             String token = tokenService.generateToken(authentication);

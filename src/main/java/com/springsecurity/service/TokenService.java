@@ -13,15 +13,15 @@ import java.util.Date;
 @Service
 public class TokenService {
 
-    @Value("{app.jwt.expiration}")
-    private Long expiration;
+    @Value("${app.jwt.expiration}")
+    private String expiration;
 
-    @Value("{app.jwt.secretKey}")
+    @Value("${app.jwt.secretKey}")
     private String secretKey;
 
     public String generateToken(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        Date expirationDate = new Date(new Date().getTime() + expiration);
+        Date expirationDate = new Date(new Date().getTime() + Long.parseLong(expiration));
         return Jwts.builder().setIssuer("Spring Security")
                 .setSubject(user.getId().toString())
                 .setExpiration(expirationDate)
